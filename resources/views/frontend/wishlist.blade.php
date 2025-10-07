@@ -1,28 +1,31 @@
 @extends('layout')
 
+@section('title', 'Wishlist')
+
 @section('content')
-<h1>Wishlist</h1>
-@if($wishlistItems->count() > 0)
-    <ul>
-    @foreach($wishlistItems as $item)
-        <li>
-            {{ $item->product->name }} - ₹{{ $item->product->price }}
-            @if($item->product->stock_count > 0)
-                <form action="{{ route('cart.store') }}" method="POST" style="display:inline">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $item->product->id }}">
-                    <button type="submit">Add to Cart</button>
-                </form>
-            @endif
-            <form action="{{ route('wishlist.destroy',$item->id) }}" method="POST" style="display:inline">
-                @csrf
-                @method('DELETE')
-                <button type="submit">Remove</button>
-            </form>
-        </li>
-    @endforeach
-    </ul>
-@else
-    <p>Wishlist empty.</p>
-@endif
+<div class="container">
+    <h2 class="mb-4">Your Wishlist</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @forelse($wishlistItems as $item)
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                @if($item->product->image)
+                    <img src="{{ asset('storage/' . $item->product->image) }}" class="card-img-top" style="height:200px; object-fit:cover;">
+                @endif
+                <div class="card-body">
+                    <h5>{{ $item->product->name }}</h5>
+                    <p>₹{{ number_format($item->product->price,2) }}</p>
+                    <a href="{{ route('cart.add', $item->product->id) }}" class="btn btn-success btn-sm">Add to Cart</a>
+                    <form action="{{ route('wishlist.remove', $item->id) }}" method="POST" class="d-inline">
+                        @csrf @method('DELETE')
+                        <button class="btn btn-danger btn-sm">Remove</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @empty
+        <p class="text-center text-muted">Wishlist is empty.</p>
+        @endforelse
+    </div>
+</div>
 @endsection

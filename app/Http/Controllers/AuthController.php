@@ -1,58 +1,61 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function loginForm()
+    //  Show Login Page
+    public function showLoginForm()
     {
         return view('auth.login');
     }
 
+    // Handle Login Request
     public function login(Request $request)
     {
-        $request->validate([
-            'email'=>'required|email',
-            'password'=>'required'
-        ]);
+        $credentials = $request->only('email', 'password');
 
-        if(Auth::attempt($request->only('email','password'))){
-            return redirect()->route('home');
+        if (Auth::attempt($credentials)) {
+            return redirect()->route('home')->with('success', 'Logged in successfully!');
         }
 
-        return back()->withErrors(['email'=>'Invalid credentials']);
+        return back()->withErrors(['email' => 'Invalid credentials.']);
     }
 
-    public function registerForm()
+    // Show Register Page
+    public function showRegisterForm()
     {
         return view('auth.register');
     }
 
+    // Handle Registration
     public function register(Request $request)
     {
-        $request->validate([
-            'name'=>'required',
-            'email'=>'required|email|unique:users,email',
-            'password'=>'required|confirmed|min:6'
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|min:6|confirmed',
         ]);
 
         $user = User::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password)
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
         ]);
 
         Auth::login($user);
-        return redirect()->route('home');
+
+        return redirect()->route('home')->with('success', 'Account created successfully!');
     }
 
+    // Logout
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('home');
+        return redirect()->route('home')->with('success', 'Logged out successfully!');
     }
 }

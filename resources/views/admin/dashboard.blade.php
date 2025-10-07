@@ -1,10 +1,32 @@
 @extends('admin.layout')
 
+@section('title', 'Dashboard')
+
 @section('content')
-<h1>Admin Dashboard</h1>
-<ul>
-    <li>Total Categories: {{ $totalCategories }}</li>
-    <li>Total Products: {{ $totalProducts }}</li>
-    <li>Total Orders: {{ $totalOrders }}</li>
-</ul>
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Total Categories</h5>
+                <p class="display-6">{{ $categories_count ?? 0 }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Total Products</h5>
+                <p class="display-6">{{ $products_count ?? 0 }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Orders</h5>
+                <p class="display-6">{{ $orders_count ?? 0 }}</p>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

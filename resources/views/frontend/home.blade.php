@@ -1,41 +1,53 @@
-@extends('layout')
+@extends('admin.layout')
+@section('title', 'Edit Product')
 
 @section('content')
-<h1>Products</h1>
-<form method="GET" action="{{ route('home') }}">
-    <input type="text" name="search" placeholder="Search Products" value="{{ request('search') }}">
-    <select name="sort">
-        <option value="">Sort</option>
-        <option value="price_asc" {{ request('sort')=='price_asc'?'selected':'' }}>Price Low→High</option>
-        <option value="price_desc" {{ request('sort')=='price_desc'?'selected':'' }}>Price High→Low</option>
-        <option value="newest" {{ request('sort')=='newest'?'selected':'' }}>Newest</option>
-    </select>
-    <button type="submit">Apply</button>
-</form>
+<form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
+    @csrf @method('PUT')
 
-<div class="products">
-    @foreach($products as $product)
-        <div class="product">
-            <h3>{{ $product->name }}</h3>
-            <p>{{ $product->description }}</p>
-            <p>Price: ₹{{ $product->price }}</p>
-            <p>Stock: {{ $product->stock_count > 0 ? $product->stock_count : 'Out of Stock' }}</p>
-            <a href="{{ route('product.show',$product->id) }}">View</a>
-            @auth
-                @if($product->stock_count > 0)
-                    <form action="{{ route('cart.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <button type="submit">Add to Cart</button>
-                    </form>
-                    <form action="{{ route('wishlist.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <button type="submit">Add to Wishlist</button>
-                    </form>
-                @endif
-            @endauth
-        </div>
-    @endforeach
-</div>
+    <div class="mb-3">
+        <label class="form-label">Product Name</label>
+        <input type="text" name="name" value="{{ $product->name }}" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Category</label>
+        <select name="category_id" class="form-select" required>
+            <option value="">-- Select Category --</option>
+            @foreach($categories as $cat)
+                <option value="{{ $cat->id }}" {{ $cat->id == $product->category_id ? 'selected' : '' }}>
+                    {{ $cat->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Price (₹)</label>
+        <input type="number" name="price" value="{{ $product->price }}" step="0.01" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control" rows="3">{{ $product->description }}</textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Stock Count</label>
+        <input type="number" name="stock" value="{{ $product->stock }}" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Current Image</label><br>
+        @if($product->image)
+            <img src="{{ asset('storage/' . $product->image) }}" width="100" class="rounded mb-2">
+        @else
+            <p class="text-muted">No image uploaded</p>
+        @endif
+        <input type="file" name="image" class="form-control mt-2">
+    </div>
+
+    <button class="btn btn-primary">Update Product</button>
+    <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Cancel</a>
+</form>
 @endsection

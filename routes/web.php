@@ -17,11 +17,14 @@ Route::get('/', [HomeController::class,'index'])->name('home');
 Route::get('product/{id}', [HomeController::class,'show'])->name('product.show');
 
 // Auth
-Route::get('login',[AuthController::class,'loginForm'])->name('login.form');
-Route::post('login',[AuthController::class,'login'])->name('login');
-Route::get('register',[AuthController::class,'registerForm'])->name('register.form');
-Route::post('register',[AuthController::class,'register'])->name('register');
-Route::post('logout',[AuthController::class,'logout'])->name('logout');
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 
 // Cart & Wishlist
 Route::middleware('auth')->group(function(){
