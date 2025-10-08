@@ -38,6 +38,7 @@ Route::prefix('admin')->middleware('auth','is_admin')->group(function(){
     Route::get('dashboard',[DashboardController::class,'index'])->name('admin.dashboard');
     Route::resource('categories',CategoryController::class,['as'=>'admin']);
     Route::resource('products',ProductController::class,['as'=>'admin']);
+    Route::put('/admin/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
     Route::get('orders',[OrderController::class,'index'])->name('admin.orders.index');
     Route::post('orders/{order}/status',[OrderController::class,'updateStatus'])->name('admin.orders.status');
 });

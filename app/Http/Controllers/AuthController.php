@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -17,13 +18,16 @@ class AuthController extends Controller
     // Handle Login Request
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $admin = User::where('email', $request->email)->first();
 
-        if (Auth::attempt($credentials)) {
-            return redirect()->route('home')->with('success', 'Logged in successfully!');
+        if ($admin && Hash::check($request->password, $admin->password)) {
+            // login success
+            Auth::login($admin);
+            return redirect()->route('admin.dashboard');
+        } else {
+            return back()->with('error', 'Invalid email or password');
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials.']);
     }
 
     // Show Register Page

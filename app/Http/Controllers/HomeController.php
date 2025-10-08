@@ -8,7 +8,9 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::query();
+        // $query = Product::query();
+           // Fetch all products
+        $products = Product::all();
 
         if($request->search){
             $query->where('name','like','%'.$request->search.'%')
@@ -23,7 +25,7 @@ class HomeController extends Controller
             }
         }
 
-        $products = $query->get();
+        // $products = $query->get();
         return view('frontend.home', compact('products'));
     }
 

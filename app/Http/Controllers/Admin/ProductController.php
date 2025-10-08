@@ -39,11 +39,12 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('success','Product created');
     }
 
-    public function edit(Product $product)
+    public function edit($id)
     {
-        $categories = Category::all();
-        return view('admin.products.edit', compact('product','categories'));
+        $product = Product::findOrFail($id);
+        return view('admin.products.edit', compact('product'));
     }
+
 
     public function update(Request $request, Product $product)
     {
