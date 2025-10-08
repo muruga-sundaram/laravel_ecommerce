@@ -3,16 +3,22 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
 class IsAdmin
 {
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->is_admin == 1) {
-            return $next($request);
+        if (Auth::check()) {
+            if (Auth::user()->is_admin == 1) {
+                return $next($request);
+            } else {
+                return redirect('/')->with('error', 'Access Denied');
+            }
         }
 
-        return redirect('/login')->with('error', 'Access denied. Admins only.');
+        return redirect('login')->with('error', 'Please login first');
     }
 }

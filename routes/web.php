@@ -13,7 +13,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserDashboardController;
 
 // Frontend
-Route::get('/', [HomeController::class,'index'])->name('home');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+});
 Route::get('product/{id}', [HomeController::class,'show'])->name('product.show');
 
 // Auth
@@ -35,10 +37,10 @@ Route::middleware('auth')->group(function(){
 
 // Admin routes
 Route::prefix('admin')->middleware('auth','is_admin')->group(function(){
-    Route::get('dashboard',[DashboardController::class,'index'])->name('admin.dashboard');
-    Route::resource('categories',CategoryController::class,['as'=>'admin']);
-    Route::resource('products',ProductController::class,['as'=>'admin']);
-    Route::put('/admin/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class);
+    Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
+    Route::put('products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
     Route::get('orders',[OrderController::class,'index'])->name('admin.orders.index');
     Route::post('orders/{order}/status',[OrderController::class,'updateStatus'])->name('admin.orders.status');
 });
