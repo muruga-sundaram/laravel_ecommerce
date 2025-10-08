@@ -1,53 +1,36 @@
-@extends('admin.layout')
-@section('title', 'Edit Product')
+@extends('layout')
+
+@section('title', 'Home')
 
 @section('content')
-<form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
-    @csrf @method('PUT')
-
-    <div class="mb-3">
-        <label class="form-label">Product Name</label>
-        <input type="text" name="name" value="{{ $product->name }}" class="form-control" required>
+<div class="container">
+    <h2 class="mb-4">Our Products</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @forelse($products as $product)
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                @if($product->image)
+                    <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" style="height:200px; object-fit:cover;">
+                @else
+                    <img src="https://via.placeholder.com/200" class="card-img-top">
+                @endif
+                <div class="card-body">
+                    <h5 class="card-title">{{ $product->name }}</h5>
+                    <p class="card-text text-muted">{{ Str::limit($product->description, 50) }}</p>
+                    <p class="fw-bold">₹{{ number_format($product->price,2) }}</p>
+                    @if($product->stock > 0)
+                        <a href="{{ route('cart.add', $product->id) }}" class="btn btn-success btn-sm">Add to Cart</a>
+                        <a href="{{ route('wishlist.add', $product->id) }}" class="btn btn-outline-primary btn-sm">Wishlist</a>
+                    @else
+                        <span class="badge bg-danger">Out of Stock</span>
+                    @endif
+                    <a href="{{ route('product.show', $product->id) }}" class="btn btn-info btn-sm mt-1">View</a>
+                </div>
+            </div>
+        </div>
+        @empty
+        <p class="text-center text-muted">No products available</p>
+        @endforelse
     </div>
-
-    <div class="mb-3">
-        <label class="form-label">Category</label>
-        <select name="category_id" class="form-select" required>
-            <option value="">-- Select Category --</option>
-            @foreach($categories as $cat)
-                <option value="{{ $cat->id }}" {{ $cat->id == $product->category_id ? 'selected' : '' }}>
-                    {{ $cat->name }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Price (₹)</label>
-        <input type="number" name="price" value="{{ $product->price }}" step="0.01" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Description</label>
-        <textarea name="description" class="form-control" rows="3">{{ $product->description }}</textarea>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Stock Count</label>
-        <input type="number" name="stock" value="{{ $product->stock }}" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Current Image</label><br>
-        @if($product->image)
-            <img src="{{ asset('storage/' . $product->image) }}" width="100" class="rounded mb-2">
-        @else
-            <p class="text-muted">No image uploaded</p>
-        @endif
-        <input type="file" name="image" class="form-control mt-2">
-    </div>
-
-    <button class="btn btn-primary">Update Product</button>
-    <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
 @endsection
