@@ -1,42 +1,33 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Models\Category;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category')->get();
+        $products = Product::all();
         return view('admin.products.index', compact('products'));
     }
 
     public function create()
     {
-        $categories = Category::all();
-        return view('admin.products.create', compact('categories'));
+        return view('admin.products.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name'=>'required',
-            'category_id'=>'required',
-            'price'=>'required|numeric',
-            'stock_count'=>'required|integer',
+            'name' => 'required|string',
+            'price' => 'required|numeric',
         ]);
 
-        $data = $request->all();
-        if($request->hasFile('image')){
-            $data['image'] = $request->file('image')->store('products','public');
-        }
-
-        Product::create($data);
-        return redirect()->route('admin.products.index')->with('success','Product created');
+        Product::create($request->only(['name', 'price']));
+        return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
     }
 
     public function edit($id)
@@ -45,30 +36,17 @@ class ProductController extends Controller
         return view('admin.products.edit', compact('product'));
     }
 
-
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'name'=>'required',
-            'category_id'=>'required',
-            'price'=>'required|numeric',
-            'stock_count'=>'required|integer',
-        ]);
-
-        $data = $request->all();
-        if($request->hasFile('image')){
-            Storage::disk('public')->delete($product->image);
-            $data['image'] = $request->file('image')->store('products','public');
-        }
-
-        $product->update($data);
-        return redirect()->route('admin.products.index')->with('success','Product updated');
+        $product = Product::findOrFail($id);
+        $product->update($request->only(['name', 'price']));
+        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
     }
 
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        if($product->image) Storage::disk('public')->delete($product->image);
+        $product = Product::findOrFail($id);
         $product->delete();
-        return redirect()->route('admin.products.index')->with('success','Product deleted');
+        return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
     }
 }

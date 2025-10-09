@@ -8,7 +8,7 @@
         <div class="card text-center shadow-sm">
             <div class="card-body">
                 <h5 class="card-title">Total Categories</h5>
-                <p class="display-6">{{ $categories_count ?? 0 }}</p>
+                <p class="display-6">{{ $totalCategories ?? 0 }}</p>
             </div>
         </div>
     </div>
