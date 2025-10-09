@@ -6,9 +6,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\User\CartController;
-use App\Http\Controllers\User\WishlistController;
-use App\Http\Controllers\User\OrderController as UserOrderController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\OrderController as UserOrderController;
 
 /*
 |--------------------------------------------------------------------------
