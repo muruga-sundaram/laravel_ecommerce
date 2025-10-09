@@ -1,55 +1,87 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\WishlistController;
+use App\Http\Controllers\User\OrderController as UserOrderController;
 
-// Frontend
-Route::middleware(['auth'])->group(function () {
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-});
-Route::get('product/{id}', [HomeController::class,'show'])->name('product.show');
+/*
+|--------------------------------------------------------------------------
+| Public / User Routes
+|--------------------------------------------------------------------------
+*/
 
-// Auth
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+// Home Page
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+// Auth Routes
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login'])->name('login.post');
+Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('register', [AuthController::class, 'register'])->name('register.post');
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Product browsing
+Route::get('products', [HomeController::class, 'products'])->name('products.index');
+Route::get('products/{id}', [HomeController::class, 'showProduct'])->name('products.show');
 
-
-// Cart & Wishlist
-Route::middleware('auth')->group(function(){
-    Route::resource('cart', CartController::class)->only(['index','store','update','destroy']);
-    Route::resource('wishlist', WishlistController::class)->only(['index','store','destroy']);
-    Route::resource('checkout', CheckoutController::class)->only(['index','store']);
-});
-
-// Admin routes
-Route::prefix('admin')->middleware('auth','is_admin')->group(function(){
-    Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class);
-    Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
-    Route::put('products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
-    Route::get('orders',[OrderController::class,'index'])->name('admin.orders.index');
-    Route::post('orders/{order}/status',[OrderController::class,'updateStatus'])->name('admin.orders.status');
+// Cart
+Route::prefix('cart')->middleware('auth')->group(function() {
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    Route::post('add', [CartController::class, 'add'])->name('cart.add');
+    Route::post('update/{id}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 });
 
-Route::middleware('auth')->group(function(){
-    Route::get('user/orders',[UserDashboardController::class,'orders'])->name('user.orders');
-    Route::get('user/wishlist',[UserDashboardController::class,'wishlist'])->name('user.wishlist');
-    Route::get('user/addresses',[UserDashboardController::class,'addresses'])->name('user.addresses');
-    Route::post('user/addresses/add',[UserDashboardController::class,'addAddress'])->name('user.address.add');
-    Route::put('user/addresses/{address}/edit',[UserDashboardController::class,'editAddress'])->name('user.address.edit');
-    Route::delete('user/addresses/{address}/delete',[UserDashboardController::class,'deleteAddress'])->name('user.address.delete');
+// Wishlist
+Route::prefix('wishlist')->middleware('auth')->group(function() {
+    Route::get('/', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('add', [WishlistController::class, 'add'])->name('wishlist.add');
+    Route::delete('remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
+});
+
+// User Orders
+Route::prefix('orders')->middleware('auth')->group(function() {
+    Route::get('/', [UserOrderController::class, 'index'])->name('admin.orders.index');
+    Route::get('{id}', [UserOrderController::class, 'show'])->name('admin.orders.show');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('/')->name('admin.')->middleware('auth')->group(function() {
+
+    // Dashboard
+    Route::get('/', function() {
+        return view('admin.dashboard');
+    })->name('dashboard');
+
+    // Categories
+    Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::get('categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+    // Products
+    Route::get('products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('products', [ProductController::class, 'store'])->name('products.store');
+    Route::get('products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('products/{id}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    // Orders
+    Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+    Route::put('orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::delete('orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 });
