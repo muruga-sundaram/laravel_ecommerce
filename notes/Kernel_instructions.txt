@@ -1,0 +1,4 @@
+To register middleware EnsureAdmin:
+- Open app/Http/Kernel.php
+- In $routeMiddleware add: 'ensure.admin' => \App\Http\Middleware\EnsureAdmin::class,
+- That enables the admin middleware used in routes.

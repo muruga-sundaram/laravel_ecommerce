@@ -11,9 +11,18 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalProducts = Product::count();
-        $totalOrders = Order::count();
-        $totalCategories = Category::count();
-        return view('admin.dashboard', compact('totalProducts','totalOrders','totalCategories'));
+        $totalProducts = \App\Models\Product::count();
+        $totalOrders = \App\Models\Order::count();
+        $totalCategories = \App\Models\Category::count();
+
+        // quick test
+        logger("Dashboard counts:", [
+            'products' => $totalProducts,
+            'orders' => $totalOrders,
+            'categories' => $totalCategories
+        ]);
+
+        return view('admin.dashboard', compact('totalProducts', 'totalOrders', 'totalCategories'));
     }
+
 }

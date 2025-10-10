@@ -34,7 +34,7 @@
 
     <div class="mb-3">
         <label class="form-label">Stock Count</label>
-        <input type="number" name="stock" value="{{ $product->stock }}" class="form-control" required>
+        <input type="number" name="stock_count" value="{{ $product->stock_count }}" class="form-control" required>
     </div>
 
     <div class="mb-3">

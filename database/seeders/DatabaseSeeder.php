@@ -3,18 +3,20 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
-class AdminSeeder extends Seeder
+class DatabaseSeeder extends Seeder
 {
-    public function run()
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
     {
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password123'),
-            'is_admin' => 1
-        ]);
+        // Call other seeders here if needed
+        // $this->call(UserSeeder::class);
+            $this->call([
+                UserSeeder::class,
+                CategorySeeder::class,
+            ]);
+
     }
 }

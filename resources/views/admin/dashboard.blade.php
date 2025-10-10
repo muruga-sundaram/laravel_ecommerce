@@ -16,7 +16,7 @@
         <div class="card text-center shadow-sm">
             <div class="card-body">
                 <h5 class="card-title">Total Products</h5>
-                <p class="display-6">{{ $products_count ?? 0 }}</p>
+                <p class="display-6">{{ $totalProducts ?? 0 }}</p>
             </div>
         </div>
     </div>
@@ -24,7 +24,7 @@
         <div class="card text-center shadow-sm">
             <div class="card-body">
                 <h5 class="card-title">Orders</h5>
-                <p class="display-6">{{ $orders_count ?? 0 }}</p>
+                <p class="display-6">{{ $totalOrders ?? 0 }}</p>
             </div>
         </div>
     </div>

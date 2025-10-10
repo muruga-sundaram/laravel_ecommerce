@@ -14,10 +14,10 @@ class HomeController extends Controller
     public function index()
     {
         // Load latest products (only in stock)
-        $products = Product::where('stock', '>', 0)->latest()->take(8)->get();
+        $products = Product::where('stock_count', '>', 0)->latest()->take(8)->get();
         $categories = Category::all();
 
-        return view('home', compact('products', 'categories'));
+        return view('frontend.home', compact('products', 'categories'));
     }
 
     /**
@@ -48,11 +48,11 @@ class HomeController extends Controller
             $query->latest();
         }
 
-        // Only products in stock
-        $products = $query->where('stock', '>', 0)->paginate(12);
+        // Only products in stock_count
+        $products = $query->where('stock_count', '>', 0)->paginate(12);
         $categories = Category::all();
 
-        return view('products.index', compact('products', 'categories'));
+        return view('frontend.products.index', compact('products', 'categories'));
     }
 
     /**
@@ -63,8 +63,8 @@ class HomeController extends Controller
         $product = Product::findOrFail($id);
 
         // If stock = 0 → show "Out of Stock"
-        $outOfStock = $product->stock <= 0;
+        $outOfStock = $product->stock_count <= 0;
 
-        return view('products.show', compact('product', 'outOfStock'));
+        return view('frontend.products.show', compact('product', 'outOfStock'));
     }
 }

@@ -38,8 +38,8 @@ class CategoryController extends Controller
     }
 
 
-    public function destroy(Category $category) {
-        $category->delete();
+    public function destroy($id) {
+        Category::findOrFail($id)->delete();
         return redirect()->route('admin.categories.index')->with('success','Category Deleted');
     }
 }

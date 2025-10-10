@@ -13,13 +13,11 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
-            ['email' => 'admin@gmail.com'], // Already exists check
-            [
-                'name' => 'Admin',
-                'password' => Hash::make('admin123'),
-                'is_admin' => 1,
-            ]
-        );
+         User::create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
+            'password' => Hash::make('password123'),
+            'is_admin' => 1
+        ]);
     }
 }

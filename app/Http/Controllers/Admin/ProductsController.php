@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 
-class ProductController extends Controller
+class ProductsController extends Controller
 {
     public function index() {
         $products = Product::with('category')->get();
@@ -54,7 +54,7 @@ class ProductController extends Controller
             'name'=>'required|string',
             'category_id'=>'required|exists:categories,id',
             'price'=>'required|numeric',
-            'stock_count'=>'required|integer',
+            // 'stock_count'=>'required|integer',
             'description'=>'required|string',
             'image'=>'nullable|image'
         ]);

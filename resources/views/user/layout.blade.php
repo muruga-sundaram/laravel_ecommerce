@@ -1,0 +1,1 @@
+<!DOCTYPE html><html><head><title>Shop</title></head><body><nav><a href="{{ route('home') }}">Home</a> | <a href="{{ route('products.index') }}">Products</a></nav><div>@yield('content')</div></body></html>

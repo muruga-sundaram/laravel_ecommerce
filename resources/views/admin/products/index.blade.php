@@ -24,8 +24,8 @@
             <td>{{ $product->category->name ?? 'N/A' }}</td>
             <td>₹{{ number_format($product->price, 2) }}</td>
             <td>
-                @if($product->stock > 0)
-                    <span class="badge bg-success">{{ $product->stock }}</span>
+                @if($product->stock_count > 0)
+                    <span class="badge bg-success">{{ $product->stock_count }}</span>
                 @else
                     <span class="badge bg-danger">Out of Stock</span>
                 @endif

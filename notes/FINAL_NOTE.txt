@@ -1,0 +1,7 @@
+This is a near-complete scaffold. To fully run:
+- Run composer install locally in this project
+- Add APP_KEY via php artisan key:generate
+- Ensure DB credentials in .env are correct
+- Register or use seeded users (admin@example.com/password)
+- To enable Google OAuth, require laravel/socialite and implement callbacks in AuthController
+- If you want me to also add Seeder for sample addresses and more products, tell me.

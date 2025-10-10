@@ -1,0 +1,5 @@
+Setup notes:
+- Add Google OAuth: in config/services.php add 'google' array (client_id, client_secret, redirect)
+- Update policies/middleware for 'can:admin' or replace with is_admin check in routes (for demo, use Gate::define('admin', fn($u)=>$u->is_admin);)
+- Ensure User model has addresses relation and is_admin flag if you want admin middleware to work.
+- Migration files here are stubs. When copying to Laravel, rename files with proper timestamps or create migrations via `php artisan make:migration` and paste code.
